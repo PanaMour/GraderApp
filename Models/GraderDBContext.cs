@@ -46,9 +46,7 @@ public partial class GraderDBContext : DbContext
 
         modelBuilder.Entity<CourseHasStudent>(entity =>
         {
-            entity.Property(e => e.CourseIdCourse).ValueGeneratedNever();
-
-            entity.HasOne(d => d.CourseIdCourseNavigation).WithOne(p => p.CourseHasStudent)
+            entity.HasOne(d => d.CourseIdCourseNavigation).WithMany(p => p.CourseHasStudents)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_course_has_students_course");
 

@@ -25,7 +25,7 @@ public partial class Course
     public int ProfessorsAfm { get; set; }
 
     [InverseProperty("CourseIdCourseNavigation")]
-    public virtual CourseHasStudent? CourseHasStudent { get; set; }
+    public virtual ICollection<CourseHasStudent> CourseHasStudents { get; } = new List<CourseHasStudent>();
 
     [ForeignKey("ProfessorsAfm")]
     [InverseProperty("Courses")]
