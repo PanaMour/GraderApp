@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GraderApp.Models.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseSemester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfessorsAfmNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CourseSemester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProfessorsAfmNavigation.Afm)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCourse">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdCourse">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdCourse">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
