@@ -156,5 +156,37 @@ namespace GraderApp.Controllers
         {
           return _context.Users.Any(e => e.Username == id);
         }
+
+        public async Task<IActionResult> UserCheck(string username, string password)
+        {
+            if (username == null || password == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            if (password != user.Password)
+            {
+                return NotFound();
+            }
+            String role ="";
+            switch (user.Role) {
+                case "Student":
+                    role = "students";
+                    break;
+                case "Professor":
+                    role = "professors";
+                    break;
+                case "Secretary":
+                    role = "secretaries";
+                    break;
+                    }
+
+            return RedirectToAction(nameof(Index),role);
+        }
     }
 }
