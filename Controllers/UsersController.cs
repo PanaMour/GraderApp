@@ -186,7 +186,8 @@ namespace GraderApp.Controllers
                     break;
                     }
 
-            return RedirectToAction(nameof(Index),role);
+            ViewBag.Username = username;
+            return RedirectToAction(nameof(Index),role, new { username = "Joe"});
         }
     }
 }

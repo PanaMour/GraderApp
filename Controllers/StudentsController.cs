@@ -22,6 +22,7 @@ namespace GraderApp.Controllers
         public async Task<IActionResult> Index()
         {
             var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
+            ViewBag.Username = RouteData.Values["username"];
             return View(await graderDBContext.ToListAsync());
         }
 
