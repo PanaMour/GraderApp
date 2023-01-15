@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GraderApp.Models;
+using System.Data;
 
 namespace GraderApp.Controllers
 {
@@ -163,6 +164,32 @@ namespace GraderApp.Controllers
         private bool StudentExists(int id)
         {
           return _context.Students.Any(e => e.RegistrationNumber == id);
+        }
+
+        public async Task<IActionResult> GradesPerCourse()
+        {
+            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
+            ViewBag.username = RouteData.Values["id"];
+            return View(await graderDBContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> GradesPerSemester()
+        {
+            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
+            ViewBag.username = RouteData.Values["id"];
+            return View(await graderDBContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> TotalGrades()
+        {
+            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
+            ViewBag.username = RouteData.Values["id"];
+            return View(await graderDBContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            return RedirectToAction(nameof(Index), "home");
         }
     }
 }
