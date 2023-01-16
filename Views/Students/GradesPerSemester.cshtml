@@ -1,0 +1,78 @@
+﻿@model IEnumerable<GraderApp.Models.Student>
+
+@{
+    ViewData["Title"] = "Grades Per Semester";
+    List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
+    List<GraderApp.Models.Course> courses = ViewBag.list2;
+    int regNum = 0;
+    String courseSem = "";
+}
+    @foreach (var item in Model)
+    {
+        if (@ViewBag.username == item.UsersUsername)
+            regNum = item.RegistrationNumber;
+    }
+    @foreach (var item in courseHasStudents)
+    {
+    if(regNum == item.StudentsRegistrationNumber)
+    {
+        foreach (var item2 in courses)
+        {
+            if (item.CourseIdCourse == item2.IdCourse)
+                courseSem = item2.CourseSemester;
+        }
+    }
+}
+
+<br />
+<h1>Grades Per Semester for Student: @ViewBag.username</h1>
+<h3>@courseSem Semester</h3>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                CourseID
+            </th>
+            <th>
+                Registration Number
+            </th>
+            <th>
+                Course Title
+            </th>
+            <th>
+                Course Grade
+            </th>
+        </tr>
+    </thead>
+    @foreach (var item in courseHasStudents)
+    {
+        @if (regNum == item.StudentsRegistrationNumber)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseIdCourse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StudentsRegistrationNumber)
+                    </td>
+
+
+                    @foreach (var item2 in courses)
+                    {
+                        if (item.CourseIdCourse == item2.IdCourse)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item2.CourseTitle)
+                            </td>
+                        }
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                    </td>
+                </tr>
+            </tbody>
+        }
+    }
+</table>

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<GraderApp.Models.Student>
+
+@{
+    ViewData["Title"] = "Total Grades";
+    List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
+    List<GraderApp.Models.Course> courses = ViewBag.list2;
+    int regNum = 0;
+}
+@foreach (var item in Model)
+{
+    if (@ViewBag.username == item.UsersUsername)
+        regNum = item.RegistrationNumber;
+}
+<br />
+<h1>Total Grades for Student: @ViewBag.username</h1>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                CourseID
+            </th>
+            <th>
+                Registration Number
+            </th>
+            <th>
+                Course Title
+            </th>
+            <th>
+                Course Semester
+            </th>
+            <th>
+                Course Grade
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var item in courseHasStudents)
+    {
+        if (regNum == item.StudentsRegistrationNumber)
+        {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseIdCourse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StudentsRegistrationNumber)
+                    </td>
+
+
+                    @foreach (var item2 in courses)
+                    {
+                        if (item.CourseIdCourse == item2.IdCourse)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item2.CourseTitle)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item2.CourseSemester)
+                            </td>
+                        }
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                    </td>
+                </tr>
+            </tbody>
+        }
+
+    }
+
+</table>

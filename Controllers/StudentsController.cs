@@ -170,7 +170,6 @@ namespace GraderApp.Controllers
         {
             var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
             ViewBag.username = RouteData.Values["id"];
-
             var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
             var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
             ViewBag.list1 = await graderDBContext1.ToListAsync();
@@ -182,6 +181,10 @@ namespace GraderApp.Controllers
         {
             var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
             ViewBag.username = RouteData.Values["id"];
+            var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
+            var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
+            ViewBag.list1 = await graderDBContext1.ToListAsync();
+            ViewBag.list2 = await graderDBContext2.ToListAsync();
             return View(await graderDBContext.ToListAsync());
         }
 
@@ -189,6 +192,10 @@ namespace GraderApp.Controllers
         {
             var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
             ViewBag.username = RouteData.Values["id"];
+            var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
+            var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
+            ViewBag.list1 = await graderDBContext1.ToListAsync();
+            ViewBag.list2 = await graderDBContext2.ToListAsync();
             return View(await graderDBContext.ToListAsync());
         }
 
