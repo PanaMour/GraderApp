@@ -20,13 +20,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index">Profile</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index">View Grades</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">View Grades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index">Insert Grades</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">Insert Grades</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index">Logout</a>

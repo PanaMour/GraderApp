@@ -6,15 +6,18 @@
     List<GraderApp.Models.Course> courses = ViewBag.list2;
     int regNum = 0;
     String courseSem = "";
+    float? sum = 0;
+    float? count = 0;
+    decimal avg = 0;
 }
-    @foreach (var item in Model)
-    {
-        if (@ViewBag.username == item.UsersUsername)
-            regNum = item.RegistrationNumber;
-    }
-    @foreach (var item in courseHasStudents)
-    {
-    if(regNum == item.StudentsRegistrationNumber)
+@foreach (var item in Model)
+{
+    if (@ViewBag.username == item.UsersUsername)
+        regNum = item.RegistrationNumber;
+}
+@foreach (var item in courseHasStudents)
+{
+    if (regNum == item.StudentsRegistrationNumber)
     {
         foreach (var item2 in courses)
         {
@@ -24,10 +27,10 @@
     }
 }
 
-<br />
+<br>
 <h1>Grades Per Semester for Student: @ViewBag.username</h1>
 <h3>@courseSem Semester</h3>
-<br />
+<br>
 <table class="table">
     <thead>
         <tr>
@@ -70,9 +73,19 @@
                     }
                     <td>
                         @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                        @{
+                            sum += item.GradeCourseStudent;
+                            count++;
+                        }
                     </td>
                 </tr>
             </tbody>
         }
     }
 </table>
+@{
+    avg = (decimal)(sum / count);
+
+    avg = Math.Round(avg, 2);
+}
+<h4>Average @courseSem Semester Grade: @avg</h4>

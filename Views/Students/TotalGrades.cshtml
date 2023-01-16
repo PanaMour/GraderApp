@@ -5,6 +5,9 @@
     List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
     List<GraderApp.Models.Course> courses = ViewBag.list2;
     int regNum = 0;
+    float? sum = 0;
+    float? count = 0;
+    decimal avg = 0;
 }
 @foreach (var item in Model)
 {
@@ -63,11 +66,19 @@
                     }
                     <td>
                         @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                        @{
+                            sum += item.GradeCourseStudent;
+                            count++;
+                        }
                     </td>
                 </tr>
             </tbody>
         }
-
     }
-
 </table>
+@{
+    avg = (decimal)(sum / count);
+    
+    avg = Math.Round(avg, 2);
+}
+<h4>Average Total Grade: @avg</h4>
