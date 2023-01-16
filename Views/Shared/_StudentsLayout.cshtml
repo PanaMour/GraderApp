@@ -20,21 +20,23 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="Index">Profile</a>
+                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="Index" asp-route-id="@ViewBag.username">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="GradesPerCourse">Grades Per Course</a>
+                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="GradesPerCourse" asp-route-id="@ViewBag.username">Grades Per Course</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="GradesPerSemester">Grades per Semester</a>
+                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="GradesPerSemester" asp-route-id="@ViewBag.username">Grades per Semester</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="TotalGrades">Total Grades</a>
+                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="TotalGrades" asp-route-id="@ViewBag.username">Total Grades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="Logout">Logout</a>
+                            <a class="nav-link" asp-area="" asp-controller="students" asp-action="Logout" asp-route-id="@ViewBag.username">Logout</a>
                         </li>
+                            
                     </ul>
+                    <span class="nav-link">Logged in as @ViewBag.username</span>
             </div>
         </nav>
     </header>

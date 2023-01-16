@@ -2,53 +2,71 @@
 
 @{
     ViewData["Title"] = "Grades Per Course";
+    List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
+    List<GraderApp.Models.Course> courses = ViewBag.list2;
+    int regNum = 0;
+    int courseId = 0;
 }
+<br />
+<h1>Grades Per Course for Student: @ViewBag.username</h1>
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                CourseID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Surname)
+                Registration Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Department)
+                Course Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UsersUsernameNavigation)
+                Course Grade
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
+    @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Department)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UsersUsernameNavigation.Username)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.RegistrationNumber">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.RegistrationNumber">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RegistrationNumber">Delete</a>
-                </td>
-            </tr>
+            if(@ViewBag.username == item.UsersUsername)
+            regNum = item.RegistrationNumber;
         }
+        @foreach (var item in courseHasStudents)
+        {
+            if(regNum == item.StudentsRegistrationNumber)
+                courseId = item.CourseIdCourse;
+        }
+
+    <tbody>
+        <tr>
+        @foreach (var item in courseHasStudents)
+        {
+                if (courseId == item.CourseIdCourse)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseIdCourse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StudentsRegistrationNumber)
+                    </td>
+
+
+                    @foreach (var item2 in courses)
+                    {
+                        if (courseId == item2.IdCourse)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item2.CourseTitle)
+                            </td>
+                        }
+                    }
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GradeCourseStudent)
+                </td>
+                }
+        }
+        </tr>
     </tbody>
 </table>
