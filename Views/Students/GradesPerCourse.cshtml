@@ -1,4 +1,6 @@
-﻿@model IEnumerable<GraderApp.Models.Student>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model X.PagedList.IPagedList<GraderApp.Models.Student>
 
 @{
     ViewData["Title"] = "Grades Per Course";
@@ -66,7 +68,21 @@
             </tr>
         </tbody>
     }
-
-    }
-    
+    }    
 </table>
+
+<nav>
+    @Html.PagedListPager(Model, page => Url.Action("GradesPerCourse", new { page = page}), new PagedListRenderOptions()
+{
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item" },
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 5,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+
+})
+</nav>
