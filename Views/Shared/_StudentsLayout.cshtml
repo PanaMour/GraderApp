@@ -37,6 +37,9 @@
                             
                     </ul>
                     <span class="nav-link">Logged in as @ViewBag.username</span>
+                    <form method="get">
+                        <input class="form-control" type="text" placeholder="Search" name="search" value="@ViewData["CurrentFilter"]" aria-label="Search">
+                    </form>
             </div>
             </div>
         </nav>

@@ -4,11 +4,6 @@
 
 @{
     ViewData["Title"] = "Total Grades";
-    List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
-    List<GraderApp.Models.Course> courses = ViewBag.list2;
-    float? sum = 0;
-    float? count = 0;
-    decimal avg = 0;
 }
 
 <br />
@@ -55,8 +50,6 @@
                 </td>
             </tr>
         </tbody>
-        sum += item.CourseGradeStudent;
-        count++;
     }
 </table>
 <nav>
@@ -74,9 +67,5 @@ ActiveLiElementClass = "active",
 
 })
 </nav>
-@{
-    avg = (decimal)(sum / count);
-    
-    avg = Math.Round(avg, 2);
-}
-<h4>Average Total Grade: @avg</h4>
+
+<h4>Average Total Grade: @ViewBag.avg</h4>

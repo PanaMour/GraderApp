@@ -62,8 +62,6 @@
         String p2 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=2";
         String p3 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=3";
         String p4 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=4";
-        String active = "active page-item";
-        String disabled = "page-item";
     }
 
     <div class="pagination-container">
@@ -164,7 +162,7 @@
 </nav>
 
 @{
-    if(count > 0){
+    if (count > 0 && String.IsNullOrEmpty(ViewBag.search)){
     avg = (decimal)(sum / count);
 
     avg = Math.Round(avg, 2);

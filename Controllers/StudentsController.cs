@@ -169,7 +169,7 @@ namespace GraderApp.Controllers
           return _context.Students.Any(e => e.RegistrationNumber == id);
         }
 
-        public async Task<IActionResult> GradesPerCourse(int? page)
+        public async Task<IActionResult> GradesPerCourse(int? page, string? search)
         {
             ViewBag.username = RouteData.Values["id"];
 
@@ -188,12 +188,22 @@ namespace GraderApp.Controllers
                 {
                     foreach(var item2 in courses)
                     {
-                        if (item.CourseIdCourse == item2.IdCourse)
+                        if (item.CourseIdCourse == item2.IdCourse && item.GradeCourseStudent >=5)
                         {
                             studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
                         }
                     }
                 }
+
+            ViewData["CurrentFilter"] = search;
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                studentCourse = studentCourse.Where(c => c.CourseTitle.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            studentCourse = studentCourse.OrderBy(c => c.CourseTitle).ToList();
+
             if (page != null && page < 1)
             {
                 page = 1;
@@ -204,7 +214,7 @@ namespace GraderApp.Controllers
             return View(studentsData);
         }
 
-        public async Task<IActionResult> GradesPerSemester(int? page)
+        public async Task<IActionResult> GradesPerSemester(int? page, string? search)
         {
             ViewBag.username = RouteData.Values["id"];
 
@@ -229,6 +239,15 @@ namespace GraderApp.Controllers
                         }
                     }
                 }
+
+            ViewData["CurrentFilter"] = search;
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                studentCourse = studentCourse.Where(c => c.CourseTitle.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            studentCourse = studentCourse.OrderBy(c => c.CourseTitle).ToList();
             if (page != null && page < 1)
             {
                 page = 1;
@@ -241,11 +260,11 @@ namespace GraderApp.Controllers
                 ViewBag.courseSem = "Fourth";
             else ViewBag.courseSem = "First";
             var studentsData = studentCourse.ToPagedList();            
-
+            ViewBag.search = search;
             return View(studentsData);
         }
 
-        public async Task<IActionResult> TotalGrades(int? page)
+        public async Task<IActionResult> TotalGrades(int? page, String? search)
         {
             ViewBag.username = RouteData.Values["id"];
 
@@ -259,6 +278,10 @@ namespace GraderApp.Controllers
                 if (ViewBag.username == item.UsersUsername)
                     regNum = item.RegistrationNumber;
             }
+
+            float? count = 0;
+            float? sum = 0;
+            decimal avg = 0;
             foreach (var item in courseHasStudents)
                 if (regNum == item.StudentsRegistrationNumber)
                 {
@@ -267,16 +290,32 @@ namespace GraderApp.Controllers
                         if (item.CourseIdCourse == item2.IdCourse)
                         {
                             studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
+                            sum += item.GradeCourseStudent;
+                            count++;
                         }
                     }
                 }
+            ViewData["CurrentFilter"] = search;
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                studentCourse = studentCourse.Where(c => c.CourseTitle.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            studentCourse = studentCourse.OrderBy(c => c.CourseTitle).ToList();
             if (page != null && page < 1)
             {
                 page = 1;
             }
-            int PageSize = 5;
+            int PageSize = 10;
             var studentsData = studentCourse.ToPagedList(page ?? 1, PageSize);
+            if (count > 0)
+            {
+                avg = (decimal)(sum / count);
 
+                avg = Math.Round(avg, 2);
+            }
+            ViewBag.avg = avg;
             return View(studentsData);
         }
 
