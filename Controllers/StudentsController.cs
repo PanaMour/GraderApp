@@ -247,14 +247,5 @@ namespace GraderApp.Controllers
         {
             return RedirectToAction(nameof(Index), "home");
         }
-
-        public ActionResult StudentCourse()
-        {
-            StudentCourses sc = new StudentCourses();
-            sc.courseHasStudents = (List<CourseHasStudent>)_context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
-            sc.courses = (List<Course>)_context.Courses.Include(c => c.ProfessorsAfmNavigation);
-            sc.students = (List<Student>)_context.Students.Include(c => c.RegistrationNumber);
-            return View(sc);
-        }
     }
 }
