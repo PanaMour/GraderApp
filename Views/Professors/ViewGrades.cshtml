@@ -1,18 +1,21 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
-@model X.PagedList.IPagedList<GraderApp.Models.StudentCourseView>
+@model X.PagedList.IPagedList<GraderApp.Models.ProfessorCourseView>
 
 @{
-    ViewData["Title"] = "Grades Per Course";
+    ViewData["Title"] = "View Grades";
 }
 <br />
-<h1>Grades Per Course for Student: @ViewBag.username</h1>
+<h1>Graded Courses by: @ViewBag.username</h1>
 <br />
 <table class="table">
     <thead>
         <tr>
             <th>
                 CourseID
+            </th>
+            <th>
+                Registration Number
             </th>
             <th>
                 Course Title
@@ -25,13 +28,16 @@
             </th>
         </tr>
     </thead>
-    
+
     @foreach (var item in Model)
     {
         <tbody>
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.IdCourse)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseRegistrationNumber)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CourseTitle)
@@ -48,8 +54,8 @@
 </table>
 
 <nav>
-    @Html.PagedListPager(Model, page => Url.Action("GradesPerCourse", new { page = page}), new PagedListRenderOptions()
-{
+    @Html.PagedListPager(Model, page => Url.Action("ViewGrades", new { page = page}), new PagedListRenderOptions()
+    {
     ActiveLiElementClass = "active",
     PageClasses = new[]{ "page-link"},
     LiElementClasses=new[] { "page-item" },
@@ -60,5 +66,5 @@
     DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
     DisplayLinkToNextPage = PagedListDisplayMode.Always,
 
-})
+    })
 </nav>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GraderApp.Models;
+using System.Data;
 
 namespace GraderApp.Controllers
 {
@@ -72,14 +73,14 @@ namespace GraderApp.Controllers
         }
 
         // GET: CourseHasStudents/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? COURSE_idCOURSE, int? STUDENTS_RegistrationNumber)
         {
-            if (id == null || _context.CourseHasStudents == null)
+            if (COURSE_idCOURSE == null || STUDENTS_RegistrationNumber == null || _context.CourseHasStudents == null)
             {
-                return NotFound();
+                return NotFound();     
             }
 
-            var courseHasStudent = await _context.CourseHasStudents.FindAsync(id);
+            CourseHasStudent courseHasStudent = _context.CourseHasStudents.Find(COURSE_idCOURSE, STUDENTS_RegistrationNumber);
             if (courseHasStudent == null)
             {
                 return NotFound();
@@ -94,36 +95,31 @@ namespace GraderApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseIdCourse,StudentsRegistrationNumber,GradeCourseStudent")] CourseHasStudent courseHasStudent)
+        public async Task<IActionResult> Edit(int CourseIdCourse, int StudentsRegistrationNumber, [Bind("CourseIdCourse,StudentsRegistrationNumber,GradeCourseStudent")] CourseHasStudent courseHasStudent)
         {
-            if (id != courseHasStudent.CourseIdCourse)
+            if (CourseIdCourse != courseHasStudent.CourseIdCourse || StudentsRegistrationNumber != courseHasStudent.StudentsRegistrationNumber)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(courseHasStudent);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseHasStudentExists(courseHasStudent.CourseIdCourse))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(courseHasStudent);
+                await _context.SaveChangesAsync();
             }
-            ViewData["CourseIdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", courseHasStudent.CourseIdCourse);
-            ViewData["StudentsRegistrationNumber"] = new SelectList(_context.Students, "RegistrationNumber", "RegistrationNumber", courseHasStudent.StudentsRegistrationNumber);
-            return View(courseHasStudent);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CourseHasStudentExists(courseHasStudent.CourseIdCourse))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            ViewBag.username = RouteData.Values["id"];
+            return RedirectToAction("insertgrades", "professors", new { id = ViewBag.username });
         }
 
         // GET: CourseHasStudents/Delete/5

@@ -1,18 +1,21 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
-@model X.PagedList.IPagedList<GraderApp.Models.StudentCourseView>
+@model X.PagedList.IPagedList<GraderApp.Models.ProfessorCourseView>
 
 @{
-    ViewData["Title"] = "Grades Per Course";
+    ViewData["Title"] = "Insert Grades";
 }
 <br />
-<h1>Grades Per Course for Student: @ViewBag.username</h1>
+<h1>Ungraded Courses by: @ViewBag.username</h1>
 <br />
 <table class="table">
     <thead>
         <tr>
             <th>
                 CourseID
+            </th>
+            <th>
+                Registration Number
             </th>
             <th>
                 Course Title
@@ -25,7 +28,7 @@
             </th>
         </tr>
     </thead>
-    
+
     @foreach (var item in Model)
     {
         <tbody>
@@ -34,13 +37,17 @@
                     @Html.DisplayFor(modelItem => item.IdCourse)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.CourseRegistrationNumber)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CourseSemester)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseGradeStudent)
+                    @*<a asp-controller="coursehasstudents" asp-action="Edit" asp-route-id="@item.IdCourse">Grade</a>*@
+                    @Html.ActionLink("Insert Grade", "Edit","coursehasstudents", new { COURSE_idCOURSE = item.IdCourse, STUDENTS_RegistrationNumber = item.CourseRegistrationNumber, id=@ViewBag.username })
                 </td>
             </tr>
         </tbody>
@@ -48,8 +55,8 @@
 </table>
 
 <nav>
-    @Html.PagedListPager(Model, page => Url.Action("GradesPerCourse", new { page = page}), new PagedListRenderOptions()
-{
+    @Html.PagedListPager(Model, page => Url.Action("InsertGrades", new { page = page}), new PagedListRenderOptions()
+    {
     ActiveLiElementClass = "active",
     PageClasses = new[]{ "page-link"},
     LiElementClasses=new[] { "page-item" },
@@ -60,5 +67,5 @@
     DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
     DisplayLinkToNextPage = PagedListDisplayMode.Always,
 
-})
+    })
 </nav>

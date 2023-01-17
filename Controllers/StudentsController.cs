@@ -190,7 +190,7 @@ namespace GraderApp.Controllers
                     {
                         if (item.CourseIdCourse == item2.IdCourse && item.GradeCourseStudent >=5)
                         {
-                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
+                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
                         }
                     }
                 }
@@ -235,7 +235,7 @@ namespace GraderApp.Controllers
                     {
                         if (item.CourseIdCourse == item2.IdCourse)
                         {
-                            studentCourse.Add(new StudentCourseView(item.CourseIdCourse, item.StudentsRegistrationNumber, item2.CourseTitle, item2.CourseSemester, item.GradeCourseStudent));
+                            studentCourse.Add(new StudentCourseView(item.CourseIdCourse, item2.CourseTitle, item2.CourseSemester, item.GradeCourseStudent));
                         }
                     }
                 }
@@ -289,7 +289,7 @@ namespace GraderApp.Controllers
                     {
                         if (item.CourseIdCourse == item2.IdCourse)
                         {
-                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
+                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
                             sum += item.GradeCourseStudent;
                             count++;
                         }

@@ -23,15 +23,19 @@
                             <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">View Grades</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="ViewGrades" asp-route-id="@ViewBag.username">View Grades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index" asp-route-id="@ViewBag.username">Insert Grades</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="InsertGrades" asp-route-id="@ViewBag.username">Insert Grades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Index">Logout</a>
+                            <a class="nav-link" asp-area="" asp-controller="professors" asp-action="Logout">Logout</a>
                         </li>
                     </ul>
+                    <span class="nav-link">Logged in as @ViewBag.username</span>
+                    <form method="get">
+                        <input class="form-control" type="text" placeholder="Search" name="search" value="@ViewData["CurrentFilter"]" aria-label="Search">
+                    </form>
                 </div>
                </div>
         </nav>
