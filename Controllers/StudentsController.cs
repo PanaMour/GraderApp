@@ -171,22 +171,38 @@ namespace GraderApp.Controllers
 
         public async Task<IActionResult> GradesPerCourse(int? page)
         {
-            var students = from c in _context.Students select c;
+            ViewBag.username = RouteData.Values["id"];
+
+            int regNum = 0;
+            var students = (from c in _context.Students select new { c.RegistrationNumber, c.UsersUsername }).ToList();
+            var courses = (from c in _context.Courses select new { c.IdCourse, c.CourseTitle, c.CourseSemester }).ToList();
+            var courseHasStudents = (from c in _context.CourseHasStudents select new {c.CourseIdCourse, c.StudentsRegistrationNumber, c.GradeCourseStudent });
+            List<StudentCourseView> studentCourse = new List<StudentCourseView>();
+            foreach (var item in students)
+            {
+                if (ViewBag.username == item.UsersUsername)
+                    regNum = item.RegistrationNumber;
+            }
+            foreach (var item in courseHasStudents)
+                if (regNum == item.StudentsRegistrationNumber)
+                {
+                    foreach(var item2 in courses)
+                    {
+                        if (item.CourseIdCourse == item2.IdCourse)
+                        {
+                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
+                        }
+                    }
+                }
             if (page != null && page < 1)
             {
                 page = 1;
             }
             int PageSize = 2;
-            var studentsData = students.ToPagedList(page ?? 1, PageSize);
+            var studentsData = studentCourse.ToPagedList(page ?? 1, PageSize);
 
-            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
-            ViewBag.username = RouteData.Values["id"];
-            var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
-            var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
-            ViewBag.list1 = await graderDBContext1.ToListAsync();
-            ViewBag.list2 = await graderDBContext2.ToListAsync();
-            //return View(await graderDBContext.ToListAsync());
             return View(studentsData);
+            //return View(studentsData);
         }
 
         public async Task<IActionResult> GradesPerSemester(int? page)
@@ -230,6 +246,15 @@ namespace GraderApp.Controllers
         public IActionResult Logout()
         {
             return RedirectToAction(nameof(Index), "home");
+        }
+
+        public ActionResult StudentCourse()
+        {
+            StudentCourses sc = new StudentCourses();
+            sc.courseHasStudents = (List<CourseHasStudent>)_context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
+            sc.courses = (List<Course>)_context.Courses.Include(c => c.ProfessorsAfmNavigation);
+            sc.students = (List<Student>)_context.Students.Include(c => c.RegistrationNumber);
+            return View(sc);
         }
     }
 }
