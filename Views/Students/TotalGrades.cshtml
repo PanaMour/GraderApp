@@ -1,21 +1,16 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
-@model X.PagedList.IPagedList<GraderApp.Models.Student>
+@model X.PagedList.IPagedList<GraderApp.Models.StudentCourseView>
 
 @{
     ViewData["Title"] = "Total Grades";
     List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
     List<GraderApp.Models.Course> courses = ViewBag.list2;
-    int regNum = 0;
     float? sum = 0;
     float? count = 0;
     decimal avg = 0;
 }
-@foreach (var item in Model)
-{
-    if (@ViewBag.username == item.UsersUsername)
-        regNum = item.RegistrationNumber;
-}
+
 <br />
 <h1>Total Grades for Student: @ViewBag.username</h1>
 <br />
@@ -39,47 +34,33 @@
             </th>
         </tr>
     </thead>
-
-    @foreach (var item in courseHasStudents)
+    @foreach (var item in Model)
     {
-        if (regNum == item.StudentsRegistrationNumber)
-        {
-            <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CourseIdCourse)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StudentsRegistrationNumber)
-                    </td>
-
-
-                    @foreach (var item2 in courses)
-                    {
-                        if (item.CourseIdCourse == item2.IdCourse)
-                        {
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.CourseTitle)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.CourseSemester)
-                            </td>
-                        }
-                    }
-                    <td>
-                        @Html.DisplayFor(modelItem => item.GradeCourseStudent)
-                        @{
-                            sum += item.GradeCourseStudent;
-                            count++;
-                        }
-                    </td>
-                </tr>
-            </tbody>
-        }
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCourse)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseRegistrationNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseSemester)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseGradeStudent)
+                </td>
+            </tr>
+        </tbody>
+        sum += item.CourseGradeStudent;
+        count++;
     }
 </table>
 <nav>
-    @Html.PagedListPager(Model, page => Url.Action("GradesPerCourse", new { page = page}), new PagedListRenderOptions()
+    @Html.PagedListPager(Model, page => Url.Action("TotalGrades", new { page = page}), new PagedListRenderOptions()
 {
 ActiveLiElementClass = "active",
     PageClasses = new[]{ "page-link"},

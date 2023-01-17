@@ -198,48 +198,85 @@ namespace GraderApp.Controllers
             {
                 page = 1;
             }
-            int PageSize = 2;
+            int PageSize = 5;
             var studentsData = studentCourse.ToPagedList(page ?? 1, PageSize);
 
             return View(studentsData);
-            //return View(studentsData);
         }
 
         public async Task<IActionResult> GradesPerSemester(int? page)
         {
-            var students = from c in _context.Students select c;
+            ViewBag.username = RouteData.Values["id"];
+
+            int regNum = 0;
+            var students = (from c in _context.Students select new { c.RegistrationNumber, c.UsersUsername }).ToList();
+            var courses = (from c in _context.Courses orderby c.CourseSemester select new { c.IdCourse, c.CourseTitle, c.CourseSemester }).ToList();
+            var courseHasStudents = (from c in _context.CourseHasStudents select new { c.CourseIdCourse, c.StudentsRegistrationNumber, c.GradeCourseStudent });
+            List<StudentCourseView> studentCourse = new List<StudentCourseView>();
+            foreach (var item in students)
+            {
+                if (ViewBag.username == item.UsersUsername)
+                    regNum = item.RegistrationNumber;
+            }
+            foreach (var item in courseHasStudents)
+                if (regNum == item.StudentsRegistrationNumber)
+                {
+                    foreach (var item2 in courses)
+                    {
+                        if (item.CourseIdCourse == item2.IdCourse)
+                        {
+                            studentCourse.Add(new StudentCourseView(item.CourseIdCourse, item.StudentsRegistrationNumber, item2.CourseTitle, item2.CourseSemester, item.GradeCourseStudent));
+                        }
+                    }
+                }
             if (page != null && page < 1)
             {
                 page = 1;
             }
-            int PageSize = 2;
-            var studentsData = students.ToPagedList(page ?? 1, PageSize);
+            if (page == 2)
+                ViewBag.courseSem = "Second";
+            else if (page ==3)
+                ViewBag.courseSem = "Third";
+            else if (page == 4)
+                ViewBag.courseSem = "Fourth";
+            else ViewBag.courseSem = "First";
+            var studentsData = studentCourse.ToPagedList();            
 
-            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
-            ViewBag.username = RouteData.Values["id"];
-            var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
-            var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
-            ViewBag.list1 = await graderDBContext1.ToListAsync();
-            ViewBag.list2 = await graderDBContext2.ToListAsync();
             return View(studentsData);
         }
 
         public async Task<IActionResult> TotalGrades(int? page)
         {
-            var students = from c in _context.Students select c;
+            ViewBag.username = RouteData.Values["id"];
+
+            int regNum = 0;
+            var students = (from c in _context.Students select new { c.RegistrationNumber, c.UsersUsername }).ToList();
+            var courses = (from c in _context.Courses select new { c.IdCourse, c.CourseTitle, c.CourseSemester }).ToList();
+            var courseHasStudents = (from c in _context.CourseHasStudents select new {c.CourseIdCourse, c.StudentsRegistrationNumber, c.GradeCourseStudent });
+            List<StudentCourseView> studentCourse = new List<StudentCourseView>();
+            foreach (var item in students)
+            {
+                if (ViewBag.username == item.UsersUsername)
+                    regNum = item.RegistrationNumber;
+            }
+            foreach (var item in courseHasStudents)
+                if (regNum == item.StudentsRegistrationNumber)
+                {
+                    foreach(var item2 in courses)
+                    {
+                        if (item.CourseIdCourse == item2.IdCourse)
+                        {
+                            studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item.StudentsRegistrationNumber,item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
+                        }
+                    }
+                }
             if (page != null && page < 1)
             {
                 page = 1;
             }
-            int PageSize = 2;
-            var studentsData = students.ToPagedList(page ?? 1, PageSize);
+            int PageSize = 5;
+            var studentsData = studentCourse.ToPagedList(page ?? 1, PageSize);
 
-            var graderDBContext = _context.Students.Include(s => s.UsersUsernameNavigation);
-            ViewBag.username = RouteData.Values["id"];
-            var graderDBContext1 = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
-            var graderDBContext2 = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
-            ViewBag.list1 = await graderDBContext1.ToListAsync();
-            ViewBag.list2 = await graderDBContext2.ToListAsync();
             return View(studentsData);
         }
 

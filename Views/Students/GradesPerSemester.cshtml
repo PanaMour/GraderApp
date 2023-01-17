@@ -1,32 +1,13 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
-@model X.PagedList.IPagedList<GraderApp.Models.Student>
+@model X.PagedList.IPagedList<GraderApp.Models.StudentCourseView>
 
 @{
     ViewData["Title"] = "Grades Per Semester";
-    List<GraderApp.Models.CourseHasStudent> courseHasStudents = ViewBag.list1;
-    List<GraderApp.Models.Course> courses = ViewBag.list2;
-    int regNum = 0;
-    String courseSem = "";
+    String courseSem = ViewBag.courseSem;
     float? sum = 0;
     float? count = 0;
     decimal avg = 0;
-}
-@foreach (var item in Model)
-{
-    if (@ViewBag.username == item.UsersUsername)
-        regNum = item.RegistrationNumber;
-}
-@foreach (var item in courseHasStudents)
-{
-    if (regNum == item.StudentsRegistrationNumber)
-    {
-        foreach (var item2 in courses)
-        {
-            if (item.CourseIdCourse == item2.IdCourse)
-                courseSem = item2.CourseSemester;
-        }
-    }
 }
 
 <br>
@@ -50,60 +31,143 @@
             </th>
         </tr>
     </thead>
-    @foreach (var item in courseHasStudents)
+    @foreach (var item in Model)
     {
-        @if (regNum == item.StudentsRegistrationNumber)
+        if (courseSem == item.CourseSemester)
         {
             <tbody>
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.CourseIdCourse)
+                        @Html.DisplayFor(modelItem => item.IdCourse)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.StudentsRegistrationNumber)
+                        @Html.DisplayFor(modelItem => item.CourseRegistrationNumber)
                     </td>
-
-
-                    @foreach (var item2 in courses)
-                    {
-                        if (item.CourseIdCourse == item2.IdCourse)
-                        {
-                            <td>
-                                @Html.DisplayFor(modelItem => item2.CourseTitle)
-                            </td>
-                        }
-                    }
                     <td>
-                        @Html.DisplayFor(modelItem => item.GradeCourseStudent)
-                        @{
-                            sum += item.GradeCourseStudent;
-                            count++;
-                        }
+                        @Html.DisplayFor(modelItem => item.CourseTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CourseGradeStudent)
                     </td>
                 </tr>
             </tbody>
+            sum += item.CourseGradeStudent;
+            count++;
         }
     }
 </table>
 <nav>
-    @Html.PagedListPager(Model, page => Url.Action("GradesPerSemester", new { page = page}), new PagedListRenderOptions()
-{
-    ActiveLiElementClass = "active",
-    PageClasses = new[]{ "page-link"},
-    LiElementClasses=new[] { "page-item" },
-    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
-    LinkToNextPageFormat = "Next",
-    LinkToPreviousPageFormat = "Previous",
-    MaximumPageNumbersToDisplay = 5,
-    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+    @{
+        String p1 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=1";
+        String p2 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=2";
+        String p3 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=3";
+        String p4 = "/Students/GradesPerSemester/" + ViewBag.username.Replace(" ","%20") + "?page=4";
+        String active = "active page-item";
+        String disabled = "page-item";
+    }
 
-})
+    <div class="pagination-container">
+        <ul class="pagination justify-content-center mt-3">
+            @switch (courseSem)
+            {
+                case "First":
+                    <li class="PagedList-skipToPrevious disabled page-item">
+                        <span class="page-link" rel="prev">Previous</span>
+                    </li>
+                break;
+                case "Second":
+                    <li class="PagedList-skipToPrevious page-item">
+                        <a class="page-link" rel="prev" href=@p1>Previous</a>
+                    </li>
+                break;
+                case "Third":
+                    <li class="PagedList-skipToPrevious page-item">
+                        <a class="page-link" rel="prev" href=@p2>Previous</a>
+                    </li>
+                break;
+                case "Fourth":
+                    <li class="PagedList-skipToPrevious page-item">
+                        <a class="page-link" rel="prev" href=@p3>Previous</a>
+                    </li>
+                    break;
+            }
+            @if(courseSem == "First"){
+            <li class="active page-item">
+                 <a class="page-link" href=@p1>1</a>
+            </li>
+            }else{
+                <li class="page-item">
+                    <a class="page-link" href=@p1>1</a>
+            </li>
+            }                
+            @if (courseSem == "Second")
+            {
+                <li class="active page-item">
+                    <a class="page-link" href=@p2>2</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href=@p2>2</a>
+                </li>
+            }
+            @if (courseSem == "Third")
+            {
+                <li class="active page-item">
+                     <a class="page-link" href=@p3>3</a>
+                </li>
+            }
+            else
+            {
+                    <li class="page-item">
+                        <a class="page-link" href=@p3>3</a>
+                </li>
+            }    
+            @if (courseSem == "Fourth")
+            {
+                <li class="active page-item">
+                     <a class="page-link" href=@p4>4</a>
+                </li>
+            }
+            else
+            {
+                    <li class="page-item">
+                        <a class="page-link" href=@p4>4</a>
+                </li>
+            }
+            @switch (courseSem)
+            {
+                case "First":
+                    <li class="PagedList-skipToNext page-item">
+                        <a class="page-link" rel="next" href=@p2>Next</a>
+                    </li>
+                    break;
+                case "Second":
+                    <li class="PagedList-skipToNext page-item">
+                        <a class="page-link" rel="next"href=@p3>Next</a>
+                    </li>
+                    break;
+                case "Third":
+                    <li class="PagedList-skipToNext page-item">
+                        <a class="page-link" rel="next" href=@p4>Next</a>
+                    </li>
+                    break;
+                case "Fourth":
+                    <li class="PagedList-skipToNext disabled page-item">
+                        <a class="page-link">Next</a>
+                    </li>
+                    break;
+            }
+        </ul>
+    </div>
 </nav>
 
 @{
+    if(count > 0){
     avg = (decimal)(sum / count);
 
     avg = Math.Round(avg, 2);
-}
 <h4>Average @courseSem Semester Grade: @avg</h4>
+    }
+}
