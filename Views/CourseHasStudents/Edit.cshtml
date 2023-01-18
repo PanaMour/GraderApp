@@ -3,10 +3,8 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h1>Edit</h1>
-
-<h4>CourseHasStudent</h4>
+<br />
+<h1>Assign a Grade for this Course</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,19 +13,14 @@
             <input type="hidden" asp-for="CourseIdCourse" />
             <input type="hidden" asp-for="StudentsRegistrationNumber" />
             <div class="form-group">
-                <label asp-for="GradeCourseStudent" class="control-label"></label>
                 <input asp-for="GradeCourseStudent" class="form-control" />
                 <span asp-validation-for="GradeCourseStudent" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

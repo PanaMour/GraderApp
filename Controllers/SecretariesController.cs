@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GraderApp.Models;
+using X.PagedList;
 
 namespace GraderApp.Controllers
 {
@@ -163,6 +164,52 @@ namespace GraderApp.Controllers
         private bool SecretaryExists(int id)
         {
           return _context.Secretaries.Any(e => e.Phonenumber == id);
+        }
+
+        public IActionResult InsertProfessors()
+        {
+            ViewBag.username = RouteData.Values["id"];
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InsertProfessors([Bind("Username,Password,AFM,Name,Surname,Department")] ProfessorUser professorUser)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            User user = new User() { Username = professorUser.Username, Password = professorUser.Password, Role = "Professor"};
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            Professor professor = new Professor() { Afm = professorUser.AFM ,Name= professorUser.Name,Surname = professorUser.Surname,Department = professorUser.Department, UsersUsername = professorUser.Username};
+            _context.Add(professor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("insertprofessors","secretaries", new { id = ViewBag.username ,success = "Professor created successfully!" });
+        }
+
+        public IActionResult InsertStudents()
+        {
+            ViewBag.username = RouteData.Values["id"];
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InsertStudents([Bind("Username,Password,RegistrationNumber,Name,Surname,Department")] StudentUser studentUser)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            User user = new User() { Username = studentUser.Username, Password = studentUser.Password, Role = "Student" };
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            Student student = new Student() { RegistrationNumber = studentUser.RegistrationNumber, Name = studentUser.Name, Surname = studentUser.Surname, Department = studentUser.Department, UsersUsername = studentUser.Username };
+            _context.Add(student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("insertstudents", "secretaries", new { id = ViewBag.username , success = "Student created successfully!"});
+        }
+        public IActionResult Logout()
+        {
+            return RedirectToAction(nameof(Index), "home");
         }
     }
 }
