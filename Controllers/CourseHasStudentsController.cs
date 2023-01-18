@@ -49,6 +49,8 @@ namespace GraderApp.Controllers
         // GET: CourseHasStudents/Create
         public IActionResult Create()
         {
+            ViewBag.username = RouteData.Values["id"];
+            ViewBag.success = "";
             ViewData["CourseIdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse");
             ViewData["StudentsRegistrationNumber"] = new SelectList(_context.Students, "RegistrationNumber", "RegistrationNumber");
             return View();
@@ -61,15 +63,25 @@ namespace GraderApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseIdCourse,StudentsRegistrationNumber,GradeCourseStudent")] CourseHasStudent courseHasStudent)
         {
-            if (ModelState.IsValid)
+            ViewBag.username = RouteData.Values["id"];
+            
+            foreach (var item in _context.CourseHasStudents)
             {
-                _context.Add(courseHasStudent);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if(courseHasStudent.StudentsRegistrationNumber == item.StudentsRegistrationNumber && courseHasStudent.CourseIdCourse == item.CourseIdCourse)
+                {
+                    ViewData["CourseIdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", courseHasStudent.CourseIdCourse);
+                    ViewData["StudentsRegistrationNumber"] = new SelectList(_context.Students, "RegistrationNumber", "RegistrationNumber", courseHasStudent.StudentsRegistrationNumber);
+                    ViewBag.success = "Student is already registered for that course!";
+                    return View();
+                }
             }
+            ViewBag.success = "Registered Student to Course successfully!";
+            _context.Add(courseHasStudent);
+            await _context.SaveChangesAsync();
             ViewData["CourseIdCourse"] = new SelectList(_context.Courses, "IdCourse", "IdCourse", courseHasStudent.CourseIdCourse);
             ViewData["StudentsRegistrationNumber"] = new SelectList(_context.Students, "RegistrationNumber", "RegistrationNumber", courseHasStudent.StudentsRegistrationNumber);
-            return View(courseHasStudent);
+            
+            return View();
         }
 
         // GET: CourseHasStudents/Edit/5

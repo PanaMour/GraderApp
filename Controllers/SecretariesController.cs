@@ -296,6 +296,24 @@ namespace GraderApp.Controllers
 
             return View(courseData);
         }
+        public IActionResult RegisterStudents()
+        {
+            ViewBag.username = RouteData.Values["id"];
+            ViewData["sem"] = new SelectList("First", "Second", "Third", "Fourth");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterStudents([Bind("IdCourse,CourseTitle,CourseSemester")] Course course)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            Course course1 = new Course() { IdCourse = course.IdCourse, CourseTitle = course.CourseTitle, CourseSemester = course.CourseSemester, ProfessorsAfm = 0 };
+            _context.Add(course1);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("insertcourses", "secretaries", new { id = ViewBag.username, success = "Course created successfully!" });
+        }
 
         public IActionResult Logout()
         {

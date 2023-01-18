@@ -1,12 +1,11 @@
 ﻿@model GraderApp.Models.CourseHasStudent
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Register Students to Courses";
+    Layout = "_SecretariesLayout";
 }
-
-<h1>Create</h1>
-
-<h4>CourseHasStudent</h4>
+<br />
+<h1>Register Students to a Course</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -21,21 +20,17 @@
                 <select asp-for="StudentsRegistrationNumber" class ="form-control" asp-items="ViewBag.StudentsRegistrationNumber"></select>
             </div>
             <div class="form-group">
-                <label asp-for="GradeCourseStudent" class="control-label"></label>
-                <input asp-for="GradeCourseStudent" class="form-control" />
+                <input asp-for="GradeCourseStudent" type="hidden" class="form-control" />
                 <span asp-validation-for="GradeCourseStudent" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Register" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+</div><br />
+<h2>@ViewBag.success</h2>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
