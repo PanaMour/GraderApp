@@ -1,0 +1,76 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model X.PagedList.IPagedList<GraderApp.Models.SecretaryCourseView>
+
+@{
+    ViewData["Title"] = "View Courses";
+}
+<br />
+<h1>View Courses</h1>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Course Title
+            </th>
+            <th>
+                Course Semester
+            </th>
+            <th>
+                Professor's Name
+            </th>
+            <th>
+                Professor's Surname
+            </th>
+            <th>
+                Professor's Department
+            </th>
+            <th>
+                Professor's AFM
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseSemester)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AFM)
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+
+<nav>
+    @Html.PagedListPager(Model, page => Url.Action("ViewCourses", new { page = page}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item" },
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 5,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+
+    })
+</nav>

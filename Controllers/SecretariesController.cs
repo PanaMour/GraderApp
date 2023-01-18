@@ -207,6 +207,63 @@ namespace GraderApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("insertstudents", "secretaries", new { id = ViewBag.username , success = "Student created successfully!"});
         }
+
+        public IActionResult InsertCourses()
+        {
+            ViewBag.username = RouteData.Values["id"];
+            ViewData["sem"] = new SelectList("First", "Second", "Third", "Fourth");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InsertCourses([Bind("IdCourse,CourseTitle,CourseSemester")] Course course)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            Course course1 = new Course() { IdCourse = course.IdCourse, CourseTitle = course.CourseTitle, CourseSemester = course.CourseSemester, ProfessorsAfm = 0 };
+            _context.Add(course1);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("insertcourses", "secretaries", new { id = ViewBag.username, success = "Course created successfully!" });
+        }
+
+        public async Task<IActionResult> ViewCourses(int? page, string? search)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            var professors = (from c in _context.Professors select new { c.Afm, c.Name, c.Surname, c.Department }).ToList();
+            var courses = (from c in _context.Courses select new { c.CourseTitle, c.CourseSemester, c.ProfessorsAfm }).ToList();
+            List<SecretaryCourseView> secretaryCourse = new List<SecretaryCourseView>();
+
+            foreach(var item in professors)
+            {
+                foreach(var item2 in courses)
+                {
+                    if (item.Afm == item2.ProfessorsAfm && item2.ProfessorsAfm != 0)
+                    {
+                        secretaryCourse.Add(new SecretaryCourseView(item2.CourseTitle,item2.CourseSemester,item.Name,item.Surname,item.Department, item2.ProfessorsAfm));
+                    }
+                }
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                secretaryCourse = secretaryCourse.Where(c => c.CourseTitle.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower()) || c.Surname.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            secretaryCourse = secretaryCourse.OrderBy(c => c.CourseTitle).ThenBy(c => c.Name).ThenBy(c => c.Surname).ToList();
+
+            if (page != null && page < 1)
+            {
+                page = 1;
+            }
+            int PageSize = 5;
+            var secretariesData = secretaryCourse.ToPagedList(page ?? 1, PageSize);
+
+            return View(secretariesData);
+        }
         public IActionResult Logout()
         {
             return RedirectToAction(nameof(Index), "home");

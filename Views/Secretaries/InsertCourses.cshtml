@@ -1,12 +1,11 @@
 ﻿@model GraderApp.Models.Course
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Insert Courses";
 }
+<br />
+<h1>Insert Courses</h1>
 
-<h1>Create</h1>
-
-<h4>Course</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="IdCourse" class="control-label"></label>
-                <input asp-for="IdCourse" class="form-control" />
+                <input asp-for="IdCourse" maxlength="5" class="form-control" />
                 <span asp-validation-for="IdCourse" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -24,22 +23,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="CourseSemester" class="control-label"></label>
-                <input asp-for="CourseSemester" class="form-control" />
-                <span asp-validation-for="CourseSemester" class="text-danger"></span>
+                <select asp-for="CourseSemester" name="CourseSemester" class="form-control">
+                    <option value="First">First</option>
+                    <option value="Second">Second</option>
+                    <option value="Third">Third</option>
+                    <option value="Fourth">Fourth</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="ProfessorsAfm" class="control-label"></label>
-                <select asp-for="ProfessorsAfm" class="form-control" asp-items="ViewBag.ProfessorsAfm"></select>
-            </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
