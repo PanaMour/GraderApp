@@ -45,8 +45,11 @@
                     </td>
                 </tr>
             </tbody>
-            sum += item.CourseGradeStudent;
-            count++;
+            if (item.CourseGradeStudent != null)
+            {
+                sum += item.CourseGradeStudent;
+                count++;
+            }
         }
     }
 </table>

@@ -188,7 +188,7 @@ namespace GraderApp.Controllers
                 {
                     foreach(var item2 in courses)
                     {
-                        if (item.CourseIdCourse == item2.IdCourse && item.GradeCourseStudent >=5)
+                        if (item.CourseIdCourse == item2.IdCourse)
                         {
                             studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
                         }
@@ -287,13 +287,13 @@ namespace GraderApp.Controllers
                 {
                     foreach(var item2 in courses)
                     {
-                        if (item.CourseIdCourse == item2.IdCourse)
+                        if (item.CourseIdCourse == item2.IdCourse && item.GradeCourseStudent != null)
                         {
                             studentCourse.Add(new StudentCourseView (item.CourseIdCourse, item2.CourseTitle,item2.CourseSemester,item.GradeCourseStudent));
-                            sum += item.GradeCourseStudent;
-                            count++;
+                                sum += item.GradeCourseStudent;
+                                count++;
+                            }
                         }
-                    }
                 }
             ViewData["CurrentFilter"] = search;
 
