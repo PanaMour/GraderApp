@@ -75,6 +75,7 @@ namespace GraderApp.Controllers
         // GET: CourseHasStudents/Edit/5
         public IActionResult Edit(int? COURSE_idCOURSE, int? STUDENTS_RegistrationNumber)
         {
+            ViewBag.username = RouteData.Values["id"];
             if (COURSE_idCOURSE == null || STUDENTS_RegistrationNumber == null || _context.CourseHasStudents == null)
             {
                 return NotFound();     

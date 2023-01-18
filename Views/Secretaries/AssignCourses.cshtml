@@ -1,12 +1,12 @@
 ﻿@using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
-@model X.PagedList.IPagedList<GraderApp.Models.ProfessorCourseView>
+@model X.PagedList.IPagedList<GraderApp.Models.Course>
 
 @{
-    ViewData["Title"] = "Insert Grades";
+    ViewData["Title"] = "Assign Courses";
 }
 <br />
-<h1>Ungraded Courses by: @ViewBag.username</h1>
+<h1>Assign Courses to Professors</h1>
 <br />
 <table class="table">
     <thead>
@@ -15,16 +15,13 @@
                 CourseID
             </th>
             <th>
-                Registration Number
-            </th>
-            <th>
                 Course Title
             </th>
             <th>
                 Course Semester
             </th>
             <th>
-                Course Grade
+                Professor's AFM
             </th>
         </tr>
     </thead>
@@ -37,16 +34,13 @@
                     @Html.DisplayFor(modelItem => item.IdCourse)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseRegistrationNumber)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.CourseTitle)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CourseSemester)
                 </td>
                 <td>
-                    @Html.ActionLink("Insert Grade", "Edit","coursehasstudents", new { COURSE_idCOURSE = item.IdCourse, STUDENTS_RegistrationNumber = item.CourseRegistrationNumber, id=@ViewBag.username })
+                    @Html.ActionLink("Assign AFM", "Edit","courses", new { idCOURSE = item.IdCourse, id=@ViewBag.username })
                 </td>
             </tr>
         </tbody>
@@ -54,7 +48,7 @@
 </table>
 
 <nav>
-    @Html.PagedListPager(Model, page => Url.Action("InsertGrades", new { page = page}), new PagedListRenderOptions()
+    @Html.PagedListPager(Model, page => Url.Action("AssignCourses", new { page = page}), new PagedListRenderOptions()
     {
     ActiveLiElementClass = "active",
     PageClasses = new[]{ "page-link"},

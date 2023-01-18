@@ -69,19 +69,21 @@ namespace GraderApp.Controllers
         }
 
         // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? idCOURSE)
         {
-            if (id == null || _context.Courses == null)
+            ViewBag.username = RouteData.Values["id"];
+            if (idCOURSE == null || _context.Courses == null)
             {
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses.FindAsync(idCOURSE);
             if (course == null)
             {
                 return NotFound();
             }
-            ViewData["ProfessorsAfm"] = new SelectList(_context.Professors, "Afm", "Afm", course.ProfessorsAfm);
+
+            ViewData["ProfessorsAfm"] = new SelectList(_context.Professors.Where( x => x.Afm != 0), "Afm", "Afm", course.ProfessorsAfm);
             return View(course);
         }
 
@@ -90,35 +92,32 @@ namespace GraderApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCourse,CourseTitle,CourseSemester,ProfessorsAfm")] Course course)
+        public async Task<IActionResult> Edit(int idCOURSE, [Bind("IdCourse,CourseTitle,CourseSemester,ProfessorsAfm")] Course course)
         {
-            if (id != course.IdCourse)
+            if (idCOURSE != course.IdCourse)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                _context.Update(course);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CourseExists(course.IdCourse))
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!CourseExists(course.IdCourse))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["ProfessorsAfm"] = new SelectList(_context.Professors, "Afm", "Afm", course.ProfessorsAfm);
-            return View(course);
+            ViewBag.username = RouteData.Values["id"];
+            return RedirectToAction("assigncourses", "secretaries", new { id = ViewBag.username });
         }
 
         // GET: Courses/Delete/5

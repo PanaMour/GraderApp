@@ -264,6 +264,39 @@ namespace GraderApp.Controllers
 
             return View(secretariesData);
         }
+
+        public async Task<IActionResult> AssignCourses(int? page, String? search)
+        {
+            ViewBag.username = RouteData.Values["id"];
+
+            ViewData["CurrentFilter"] = search;
+            var courses = from c in _context.Courses
+                            select c;
+            List<Course> course = new List<Course>();
+            foreach (var item in courses)
+            {
+                if(item.ProfessorsAfm == 0)
+                {
+                    course.Add(new Course() { IdCourse = item.IdCourse, CourseTitle = item.CourseTitle, CourseSemester = item.CourseSemester, ProfessorsAfm = item.ProfessorsAfm});
+                }
+            }
+            if (!String.IsNullOrEmpty(search))
+            {
+                course = course.Where(c => c.CourseTitle.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            course = course.OrderBy(c => c.CourseTitle).ToList();
+
+            if (page != null && page < 1)
+            {
+                page = 1;
+            }
+            int PageSize = 5;
+            var courseData = course.ToPagedList(page ?? 1, PageSize);
+
+            return View(courseData);
+        }
+
         public IActionResult Logout()
         {
             return RedirectToAction(nameof(Index), "home");

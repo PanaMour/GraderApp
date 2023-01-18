@@ -277,8 +277,8 @@ namespace GraderApp.Controllers
             return View(professorsData);
         }
 
-            //Logout Function
-            public IActionResult Logout()
+        //Logout Function
+        public IActionResult Logout()
         {
         return RedirectToAction(nameof(Index), "home");
         }
