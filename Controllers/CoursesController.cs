@@ -18,56 +18,6 @@ namespace GraderApp.Controllers
             _context = context;
         }
 
-        // GET: Courses
-        public async Task<IActionResult> Index()
-        {
-            var graderDBContext = _context.Courses.Include(c => c.ProfessorsAfmNavigation);
-            return View(await graderDBContext.ToListAsync());
-        }
-
-        // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Courses == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses
-                .Include(c => c.ProfessorsAfmNavigation)
-                .FirstOrDefaultAsync(m => m.IdCourse == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        // GET: Courses/Create
-        public IActionResult Create()
-        {
-            ViewData["ProfessorsAfm"] = new SelectList(_context.Professors, "Afm", "Afm");
-            return View();
-        }
-
-        // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCourse,CourseTitle,CourseSemester,ProfessorsAfm")] Course course)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProfessorsAfm"] = new SelectList(_context.Professors, "Afm", "Afm", course.ProfessorsAfm);
-            return View(course);
-        }
-
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? idCOURSE)
         {
@@ -118,44 +68,6 @@ namespace GraderApp.Controllers
             ViewData["ProfessorsAfm"] = new SelectList(_context.Professors, "Afm", "Afm", course.ProfessorsAfm);
             ViewBag.username = RouteData.Values["id"];
             return RedirectToAction("assigncourses", "secretaries", new { id = ViewBag.username });
-        }
-
-        // GET: Courses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Courses == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses
-                .Include(c => c.ProfessorsAfmNavigation)
-                .FirstOrDefaultAsync(m => m.IdCourse == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return View(course);
-        }
-
-        // POST: Courses/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Courses == null)
-            {
-                return Problem("Entity set 'GraderDBContext.Courses'  is null.");
-            }
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null)
-            {
-                _context.Courses.Remove(course);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)

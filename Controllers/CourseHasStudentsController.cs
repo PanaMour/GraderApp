@@ -19,33 +19,6 @@ namespace GraderApp.Controllers
             _context = context;
         }
 
-        // GET: CourseHasStudents
-        public async Task<IActionResult> Index()
-        {
-            var graderDBContext = _context.CourseHasStudents.Include(c => c.CourseIdCourseNavigation).Include(c => c.StudentsRegistrationNumberNavigation);
-            return View(await graderDBContext.ToListAsync());
-        }
-
-        // GET: CourseHasStudents/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.CourseHasStudents == null)
-            {
-                return NotFound();
-            }
-
-            var courseHasStudent = await _context.CourseHasStudents
-                .Include(c => c.CourseIdCourseNavigation)
-                .Include(c => c.StudentsRegistrationNumberNavigation)
-                .FirstOrDefaultAsync(m => m.CourseIdCourse == id);
-            if (courseHasStudent == null)
-            {
-                return NotFound();
-            }
-
-            return View(courseHasStudent);
-        }
-
         // GET: CourseHasStudents/Create
         public IActionResult Create()
         {
@@ -133,45 +106,6 @@ namespace GraderApp.Controllers
             }
             ViewBag.username = RouteData.Values["id"];
             return RedirectToAction("insertgrades", "professors", new { id = ViewBag.username });
-        }
-
-        // GET: CourseHasStudents/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.CourseHasStudents == null)
-            {
-                return NotFound();
-            }
-
-            var courseHasStudent = await _context.CourseHasStudents
-                .Include(c => c.CourseIdCourseNavigation)
-                .Include(c => c.StudentsRegistrationNumberNavigation)
-                .FirstOrDefaultAsync(m => m.CourseIdCourse == id);
-            if (courseHasStudent == null)
-            {
-                return NotFound();
-            }
-
-            return View(courseHasStudent);
-        }
-
-        // POST: CourseHasStudents/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.CourseHasStudents == null)
-            {
-                return Problem("Entity set 'GraderDBContext.CourseHasStudents'  is null.");
-            }
-            var courseHasStudent = await _context.CourseHasStudents.FindAsync(id);
-            if (courseHasStudent != null)
-            {
-                _context.CourseHasStudents.Remove(courseHasStudent);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool CourseHasStudentExists(int id)

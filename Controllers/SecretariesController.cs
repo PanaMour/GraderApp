@@ -26,207 +26,94 @@ namespace GraderApp.Controllers
             ViewBag.username = RouteData.Values["id"];
             return View(await graderDBContext.ToListAsync());
         }
-
-        // GET: Secretaries/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries
-                .Include(s => s.UsersUsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Phonenumber == id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-
-            return View(secretary);
-        }
-
-        // GET: Secretaries/Create
-        public IActionResult Create()
-        {
-            ViewData["UsersUsername"] = new SelectList(_context.Users, "Username", "Username");
-            return View();
-        }
-
-        // POST: Secretaries/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Phonenumber,Name,Surname,Department,UsersUsername")] Secretary secretary)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(secretary);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UsersUsername"] = new SelectList(_context.Users, "Username", "Username", secretary.UsersUsername);
-            return View(secretary);
-        }
-
-        // GET: Secretaries/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries.FindAsync(id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-            ViewData["UsersUsername"] = new SelectList(_context.Users, "Username", "Username", secretary.UsersUsername);
-            return View(secretary);
-        }
-
-        // POST: Secretaries/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Phonenumber,Name,Surname,Department,UsersUsername")] Secretary secretary)
-        {
-            if (id != secretary.Phonenumber)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(secretary);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SecretaryExists(secretary.Phonenumber))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UsersUsername"] = new SelectList(_context.Users, "Username", "Username", secretary.UsersUsername);
-            return View(secretary);
-        }
-
-        // GET: Secretaries/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Secretaries == null)
-            {
-                return NotFound();
-            }
-
-            var secretary = await _context.Secretaries
-                .Include(s => s.UsersUsernameNavigation)
-                .FirstOrDefaultAsync(m => m.Phonenumber == id);
-            if (secretary == null)
-            {
-                return NotFound();
-            }
-
-            return View(secretary);
-        }
-
-        // POST: Secretaries/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Secretaries == null)
-            {
-                return Problem("Entity set 'GraderDBContext.Secretaries'  is null.");
-            }
-            var secretary = await _context.Secretaries.FindAsync(id);
-            if (secretary != null)
-            {
-                _context.Secretaries.Remove(secretary);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SecretaryExists(int id)
-        {
-          return _context.Secretaries.Any(e => e.Phonenumber == id);
-        }
-
+        //Function so that Secretaries can Insert Professors into the Database
         public IActionResult InsertProfessors()
         {
             ViewBag.username = RouteData.Values["id"];
+            ViewBag.success = "";
             return View();
         }
-
+        //Inserts Professors using ProfessorUser Model by first creating a User object
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertProfessors([Bind("Username,Password,AFM,Name,Surname,Department")] ProfessorUser professorUser)
         {
             ViewBag.username = RouteData.Values["id"];
 
-            User user = new User() { Username = professorUser.Username, Password = professorUser.Password, Role = "Professor"};
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-            Professor professor = new Professor() { Afm = professorUser.AFM ,Name= professorUser.Name,Surname = professorUser.Surname,Department = professorUser.Department, UsersUsername = professorUser.Username};
-            _context.Add(professor);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("insertprofessors","secretaries", new { id = ViewBag.username ,success = "Professor created successfully!" });
+            try
+            {
+                User user = new User() { Username = professorUser.Username, Password = professorUser.Password, Role = "Professor" };
+                _context.Add(user);
+                Professor professor = new Professor() { Afm = professorUser.AFM, Name = professorUser.Name, Surname = professorUser.Surname, Department = professorUser.Department, UsersUsername = professorUser.Username };
+                _context.Add(professor);
+                await _context.SaveChangesAsync();
+            }
+            catch {
+                ViewBag.success = "An Error has occurred!";
+                return View();
+            }
+            
+            ViewBag.success = "Professor created successfully!";
+            return View();
         }
-
+        //Function so that Secretaries can Insert Students into the Database
         public IActionResult InsertStudents()
         {
             ViewBag.username = RouteData.Values["id"];
+            ViewBag.success = "";
             return View();
         }
-
+        //Inserts Students using StudentUser Model by first creating a User object
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertStudents([Bind("Username,Password,RegistrationNumber,Name,Surname,Department")] StudentUser studentUser)
         {
             ViewBag.username = RouteData.Values["id"];
-
-            User user = new User() { Username = studentUser.Username, Password = studentUser.Password, Role = "Student" };
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-            Student student = new Student() { RegistrationNumber = studentUser.RegistrationNumber, Name = studentUser.Name, Surname = studentUser.Surname, Department = studentUser.Department, UsersUsername = studentUser.Username };
-            _context.Add(student);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("insertstudents", "secretaries", new { id = ViewBag.username , success = "Student created successfully!"});
+            try
+            {
+                User user = new User() { Username = studentUser.Username, Password = studentUser.Password, Role = "Student" };
+                _context.Add(user);
+                Student student = new Student() { RegistrationNumber = studentUser.RegistrationNumber, Name = studentUser.Name, Surname = studentUser.Surname, Department = studentUser.Department, UsersUsername = studentUser.Username };
+                _context.Add(student);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                ViewBag.success = "An Error has occurred!";
+                return View();
+            }
+            ViewBag.success = "Student created successfully!";
+            return View();
         }
-
+        //Function so that Secretaries can Insert Courses into the Database
         public IActionResult InsertCourses()
         {
             ViewBag.username = RouteData.Values["id"];
+            ViewBag.success = "";
             ViewData["sem"] = new SelectList("First", "Second", "Third", "Fourth");
             return View();
         }
-
+        //Inserts Courses using the Course Model
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertCourses([Bind("IdCourse,CourseTitle,CourseSemester")] Course course)
         {
             ViewBag.username = RouteData.Values["id"];
-
-            Course course1 = new Course() { IdCourse = course.IdCourse, CourseTitle = course.CourseTitle, CourseSemester = course.CourseSemester, ProfessorsAfm = 0 };
-            _context.Add(course1);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("insertcourses", "secretaries", new { id = ViewBag.username, success = "Course created successfully!" });
+            try
+            {
+                Course course1 = new Course() { IdCourse = course.IdCourse, CourseTitle = course.CourseTitle, CourseSemester = course.CourseSemester, ProfessorsAfm = 0 };
+                _context.Add(course1);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                ViewBag.success = "An Error has occurred!";
+                return View();
+            }
+            ViewBag.success = "Course created successfully!";
+            return View();
         }
-
+        //Displays all available courses to Secretaries
         public async Task<IActionResult> ViewCourses(int? page, string? search)
         {
             ViewBag.username = RouteData.Values["id"];
@@ -264,7 +151,7 @@ namespace GraderApp.Controllers
 
             return View(secretariesData);
         }
-
+        //Allows Secretaries to assign a Professor's AFM to a Course that previously used dummy AFM=0
         public async Task<IActionResult> AssignCourses(int? page, String? search)
         {
             ViewBag.username = RouteData.Values["id"];
@@ -296,25 +183,7 @@ namespace GraderApp.Controllers
 
             return View(courseData);
         }
-        public IActionResult RegisterStudents()
-        {
-            ViewBag.username = RouteData.Values["id"];
-            ViewData["sem"] = new SelectList("First", "Second", "Third", "Fourth");
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterStudents([Bind("IdCourse,CourseTitle,CourseSemester")] Course course)
-        {
-            ViewBag.username = RouteData.Values["id"];
-
-            Course course1 = new Course() { IdCourse = course.IdCourse, CourseTitle = course.CourseTitle, CourseSemester = course.CourseSemester, ProfessorsAfm = 0 };
-            _context.Add(course1);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("insertcourses", "secretaries", new { id = ViewBag.username, success = "Course created successfully!" });
-        }
-
+        //Logout Function
         public IActionResult Logout()
         {
             return RedirectToAction(nameof(Index), "home");
