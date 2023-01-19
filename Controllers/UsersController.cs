@@ -22,17 +22,15 @@ namespace GraderApp.Controllers
         {
             if (username == null || password == null || _context.Users == null)
             {
-                return NotFound();
+                ViewBag.success = "Wrong Credentials. Please try again!";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             var user = await _context.Users.FindAsync(username);
-            if (user == null)
+            if (user == null || password != user.Password)
             {
-                return NotFound();
-            }
-            if (password != user.Password)
-            {
-                return NotFound();
+                ViewBag.success = "Wrong Credentials. Please try again!";
+                return View("~/Views/Home/Index.cshtml");
             }
             String role ="";
             switch (user.Role) {
