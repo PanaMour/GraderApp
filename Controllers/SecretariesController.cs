@@ -90,7 +90,6 @@ namespace GraderApp.Controllers
         {
             ViewBag.username = RouteData.Values["id"];
             ViewBag.success = "";
-            ViewData["sem"] = new SelectList("First", "Second", "Third", "Fourth");
             return View();
         }
         //Inserts Courses using the Course Model
